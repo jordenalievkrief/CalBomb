@@ -11,19 +11,37 @@ class Node:
             return self
         return self.next[i-1]
 
+    def __str__(self):
+        if self.prev: prev = self.prev.data
+        else: prev = None
+        if self.next: next = self.next.data
+        else: next = None
+        return '{0} <-- {1} --> {2}'.format(prev,self.data,next)
 
 class LinkedList:
     def __init__( self ):
         self.head = None
+        self.tail = None
 
-    def add(self, data):
+    def addHead(self, data):
         node = Node(data)
         if self.head == None:
             self.head = node
+            self.tail = self.head
         else:
             node.next = self.head
             node.next.prev = node
             self.head = node
+
+    def addTail(self, data):
+        node = Node(data)
+        if self.head == None:
+            self.head = node
+            self.tail = self.head
+        else:
+            node.prev = self.tail
+            node.prev.next = node
+            self.tail = node
 
     def search(self, k):
         p = self.head
@@ -38,15 +56,16 @@ class LinkedList:
         if p.prev != None: p.prev.next = p.next
         else: self.head = p.next
         if p.next != None: p.next.prev = p.prev
+        else: self.tail = p.prev
 
     def __str__(self):
-        s = ''
+        s = '<'
         p = self.head
         if p != None:
             while p != None:
                 s += str(p.data)
                 p = p.next
-        return s
+        return s + '>'
 
     def __repr__(self):
         return str(self)
@@ -66,35 +85,35 @@ class LinkedList:
             return count
         return 0
 
-def Str_to_Reversed_LinkedList(str):
+def StrToLinkedList(str):
     l = LinkedList()
     for i in str:
-        l.add(i)
+        l.addTail(i)
     return l
 
 def Plus(list1, list2):
     def Add(x, y):
         return((int(x.data) if x is not None else 0) + (int(y.data) if y is not None else 0))
     l = LinkedList()
-    p1, p2 = list1.head, list2.head
+    p1, p2 = list1.tail, list2.tail
     while(p1 or p2):
         x = Add(p1, p2)
-        l.add(x % 10)
+        l.addHead(x % 10)
         if x // 10 > 0:
-            if p1.next:
-                p1.next.data = int(p1.next.data) + x // 10
+            if p1.prev:
+                p1.prev.data = int(p1.prev.data) + x // 10
             else:
-                p1.next = Node(x // 10)
-        if p1: p1 = p1.next
-        if p2: p2 = p2.next
+                p1.prev = Node(x // 10)
+        if p1: p1 = p1.prev
+        if p2: p2 = p2.prev
     return l
 
 def Insert():
     global stack
     l = LinkedList()
-    l.add(None)
+    l.addHead(None)
     while(l.head.data != 'q'):
-        l = Str_to_Reversed_LinkedList(input('Put the number:   '))
+        l = StrToLinkedList(input('Put the number:   '))
         if(l[0].data == '+'):
             l = Plus(stack.pop(), stack.pop())
         print(l)
@@ -103,4 +122,3 @@ def Insert():
 
 Insert()
 print(stack)
-
