@@ -22,7 +22,7 @@ def Node(data, next = None, prev = None):
             return self
         return self.next[i-1]
 
-    def str():
+    def toStr():
         nonlocal data, next, prev
         if prev: prev = prev['get']('data')
         else: prev = None
@@ -30,7 +30,7 @@ def Node(data, next = None, prev = None):
         else: next = None
         return '{0} <-- {1} --> {2}'.format(prev, data, next)
 
-    dispatch = {'get' : get, 'set' : set_new, 'getitem' : getitem, 'str' : str} 
+    dispatch = {'get' : get, 'set' : set_new, 'getitem' : getitem, 'str' : toStr} 
     return dispatch
 
 def LinkedList(head = None, tail = None):
@@ -45,25 +45,27 @@ def LinkedList(head = None, tail = None):
         if msg == 'tail':
             tail = obj
 
-    def addHead(self, data):
+    def addHead(data):
+        nonlocal head, tail
         node = Node(data)
-        if self.head == None:
-            self.head = node
-            self.tail = self.head
+        if head == None:
+            head = node
+            tail = head
         else:
-            node['set']('next', self.head) # node.next = self.head
+            node['set']('next', head) # node.next = self.head
             node['get']('next')['set']('prev', node) # node.next.prev = node
-            self.head = node
+            head = node
 
-    def addTail(self, data):
+    def addTail(data):
+        nonlocal head, tail
         node = Node(data)
-        if self.head == None:
-            self.head = node
-            self.tail = self.head
+        if head == None:
+            head = node
+            tail = head
         else:
-            node['set']('prev', self.tail) # node.prev = self.tail
+            node['set']('prev', tail) # node.prev = self.tail
             node['get']('prev')['set']('next', node) # node.prev.next = node
-            self.tail = node
+            tail = node
 
     def search(self, k):
         p = self.head
@@ -84,24 +86,21 @@ def LinkedList(head = None, tail = None):
         else: 
             self.tail = p['get']('prev')
 
-    def __str__(self):
+    def toStr():
         s = '<'
-        p = self.head
+        p = head
         if p != None:
             while p != None:
                 s += str(p['get']('data'))
                 p = p['get']('next')
         return s + '>'
 
-    def __repr__(self):
-        return str(self)
-
-    def __getitem__(self, i):
+    def getitem(self, i):
         if i == 0:
             return self.head
         return self.head.next[i-1]
 
-    def __len__(self):
+    def len(self):
         count = 0
         p = self.head
         if p != None:
@@ -110,6 +109,9 @@ def LinkedList(head = None, tail = None):
                 count += 1
             return count
         return 0
+
+    dispatch = {'get' : get, 'set' : set_new,'str' : toStr, 'addHead' : addHead, 'addTail' : addTail, 'remove' : remove, 'search' : search, 'getitem' : getitem, 'len' : len}
+    return dispatch
 
 def StrToLinkedList(str):
     l = LinkedList()
@@ -174,7 +176,13 @@ def Calc():
         l = m(operands.pop(), operands.pop())
         operands += [l]
 
-Insert_Loop()
-Calc()
-print(operands)
-print(operators)
+# Insert_Loop()
+# Calc()
+# print(operands)
+# print(operators)
+
+l = LinkedList()
+l['addHead'](1)
+l['addTail'](2)
+l['addHead'](3)
+print(l['str']())
