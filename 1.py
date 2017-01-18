@@ -67,8 +67,8 @@ def LinkedList(head = None, tail = None):
             node['get']('prev')['set']('next', node) # node.prev.next = node
             tail = node
 
-    def search(self, k):
-        p = self.head
+    def search(k):
+        p = head
         if p != None:
             while p != None:
                 if (p['get']('data') == k):
@@ -76,15 +76,16 @@ def LinkedList(head = None, tail = None):
                 p = p['get']('next')
         return None
 
-    def remove(self, p):
+    def remove(p):
+        nonlocal head, tail
         if p['get']('prev') != None: 
             p['get']('prev')['set']('next', p['get']('next'))
         else:
-            self.head = p['get']('next')
+            head = (p['get']('next'))
         if p['get']('next') != None:
             p['get']('next')['set']('prev', p['get']('prev'))
         else: 
-            self.tail = p['get']('prev')
+            tail = p['get']('prev')
 
     def toStr():
         s = '<'
@@ -100,7 +101,7 @@ def LinkedList(head = None, tail = None):
     #         return self.head
     #     return self.head.next[i-1]
 
-    def len(self):
+    def len():
         count = 0
         p = head
         if p != None:
@@ -110,7 +111,18 @@ def LinkedList(head = None, tail = None):
             return count
         return 0
 
-    dispatch = {'get' : get, 'set' : set_new,'str' : toStr, 'addHead' : addHead, 'addTail' : addTail, 'remove' : remove, 'search' : search, 'len' : len}
+    def delHeadZero():
+        nonlocal head
+        p = head
+        while p['get']('data') == 0:
+            pNext = p['get']('next')
+            if pNext:                
+                remove(p)
+                p = pNext
+            else:                
+                return        
+
+    dispatch = {'get' : get, 'set' : set_new,'str' : toStr, 'addHead' : addHead, 'addTail' : addTail, 'remove' : remove, 'search' : search, 'len' : len, 'delHeadZero' : delHeadZero}
     return dispatch
 
 def StrToLinkedList(str):
@@ -140,7 +152,30 @@ def Sub(list1, list2):
     pass
 
 def Mul(list1, list2):
-    pass
+    def Mult(x, y):
+        return((int(x['get']('data')) if x is not None else 0) * (int(y['get']('data')) if y is not None else 0))
+    tran = 0
+    p1 = list1['get']('tail')
+    sum = LinkedList()
+    sum['addHead'](0)
+    while p1:
+        p2 = list2['get']('tail')
+        rest = LinkedList()
+        rest['addHead'](0)
+        new_list = LinkedList()
+        for i in range(tran):
+            new_list['addTail'](0)
+            rest['addTail'](0) 
+        while p2:
+            x = Mult(p1, p2)
+            new_list['addHead'](x%10)
+            rest['addHead'](x//10)
+            p2 = p2['get']('prev')
+        sum = Plus(new_list, sum)
+        sum = Plus(rest, sum)
+        p1 = p1['get']('prev')
+        tran += 1
+    return sum
 
 def Div(list1, list2):
     pass
@@ -168,6 +203,7 @@ def Calc():
         x = operators.pop()
         m = Apply(x)
         l = m(operands.pop(), operands.pop())
+        l['delHeadZero']()
         operands += [l]
 
 Insert_Loop()
@@ -178,4 +214,4 @@ p = ''
 for i in operands:
     p += i['str']()
 print(p)
-# #############
+#############
