@@ -4,9 +4,8 @@ operators = []
 def Node(data, next = None, prev = None):
     def get(msg):
         nonlocal data, next, prev
-        if msg == 'data': return data 
-        if msg == 'next': return next 
-        if msg == 'prev': return prev 
+        f = {'data': data, 'next': next, 'prev': prev}
+        return f[msg]
 
     def set_new(msg, obj):
         nonlocal data, next, prev
@@ -34,10 +33,17 @@ def Node(data, next = None, prev = None):
     dispatch = {'get' : get, 'set' : set_new, 'getitem' : getitem, 'str' : str} 
     return dispatch
 
-class LinkedList:
-    def __init__( self ):
-        self.head = None
-        self.tail = None
+def LinkedList(head = None, tail = None):
+    def get(msg):
+        nonlocal head, tail
+        f = {'head' : head, 'tail' : tail}
+        return f[msg]
+
+    def set_new(msg, obj):
+        if msg == 'head':
+            head = obj
+        if msg == 'tail':
+            tail = obj
 
     def addHead(self, data):
         node = Node(data)
@@ -63,16 +69,20 @@ class LinkedList:
         p = self.head
         if p != None:
             while p != None:
-                if (p.data == k):
+                if (p['get']('data') == k):
                     return p
-                p = p.next
+                p = p['get']('next')
         return None
 
     def remove(self, p):
-        if p.prev != None: p.prev.next = p.next
-        else: self.head = p.next
-        if p.next != None: p.next.prev = p.prev
-        else: self.tail = p.prev
+        if p['get']('prev') != None: 
+            p['get']('prev')['set']('next', p['get']('next'))
+        else:
+            self.head = p['get']('next')
+        if p['get']('next') != None:
+            p['get']('next')['set']('prev', p['get']('prev'))
+        else: 
+            self.tail = p['get']('prev')
 
     def __str__(self):
         s = '<'
@@ -96,7 +106,7 @@ class LinkedList:
         p = self.head
         if p != None:
             while p != None:
-                p = p.next
+                p = p['get']('next')
                 count += 1
             return count
         return 0
@@ -109,19 +119,19 @@ def StrToLinkedList(str):
 
 def Plus(list1, list2):
     def Add(x, y):
-        return((int(x.data) if x is not None else 0) + (int(y.data) if y is not None else 0))
+        return((int(x['get']('data')) if x is not None else 0) + (int(y['get']('data')) if y is not None else 0))
     l = LinkedList()
     p1, p2 = list1.tail, list2.tail
     while(p1 or p2):
         x = Add(p1, p2)
         l.addHead(x % 10)
         if x // 10 > 0:
-            if p1.prev:
-                p1.prev.data = int(p1.prev.data) + x // 10
+            if p1['get']('prev'):
+                p1['get']('prev')['set']('data', int(p1['get']('prev')['get']('data')) + x // 10)
             else:
-                p1.prev = Node(x // 10)
-        if p1: p1 = p1.prev
-        if p2: p2 = p2.prev
+                p1['set']('prev', Node(x // 10)) # p1, list1 on head add's 1  
+        if p1: p1 = p1['get']('prev')
+        if p2: p2 = p2['get']('prev')
     return l
 
 def Sub(list1, list2):
@@ -164,12 +174,7 @@ def Calc():
         l = m(operands.pop(), operands.pop())
         operands += [l]
 
-# Insert_Loop()
-# Calc()
-# print(operands)
-# print(operators)
-l = LinkedList()
-l.addHead(1)
-l.addHead(2)
-l.addHead(3)
-print(l)
+Insert_Loop()
+Calc()
+print(operands)
+print(operators)
