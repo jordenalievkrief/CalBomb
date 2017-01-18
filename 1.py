@@ -146,14 +146,8 @@ def Div(list1, list2):
     pass
 
 def Apply(x):
-    if(x == '+'):
-        return Plus
-    elif(x == '-'):
-        return Sub
-    elif(x == '*'):
-        return Mul
-    elif(x == '/'):
-        return Div
+    dispatch = {'+' : Plus, '-' : Sub, '*' : Mul, '/' : Div}
+    return dispatch[x]
 
 def Insert_Loop():
     global operands, operators
