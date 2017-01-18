@@ -1,25 +1,37 @@
 operands = []
 operators = []
 
-def Node():
-    def init(self, data):
-        self.data = data
-        self.next = None
-        self.prev = None
+def Node(data, next = None, prev = None):
+    def get(msg):
+        nonlocal data, next, prev
+        if msg == 'data': return data 
+        if msg == 'next': return next 
+        if msg == 'prev': return prev 
 
-    def getitem(self, i):
+    def set_new(msg, obj):
+        nonlocal data, next, prev
+        if msg == 'data':
+            data = obj
+        if msg == 'next':
+            next = obj
+        if msg == 'prev':
+            prev = obj
+
+    def getitem(i):
+        nonlocal data, next, prev
         if i == 0:
             return self
         return self.next[i-1]
 
-    def str(self):
-        if self.prev: prev = self.prev.data
+    def str():
+        nonlocal data, next, prev
+        if prev: prev = prev['get']('data')
         else: prev = None
-        if self.next: next = self.next.data
+        if next: next = next['get']('data')
         else: next = None
-        return '{0} <-- {1} --> {2}'.format(prev,self.data,next)
+        return '{0} <-- {1} --> {2}'.format(prev, data, next)
 
-    dispatch = {'init' : init, 'getitem' : getitem, 'str' : str} 
+    dispatch = {'get' : get, 'set' : set_new, 'getitem' : getitem, 'str' : str} 
     return dispatch
 
 class LinkedList:
@@ -33,8 +45,8 @@ class LinkedList:
             self.head = node
             self.tail = self.head
         else:
-            node.next = self.head
-            node.next.prev = node
+            node['set']('next', self.head) # node.next = self.head
+            node['get']('next')['set']('prev', node) # node.next.prev = node
             self.head = node
 
     def addTail(self, data):
@@ -43,8 +55,8 @@ class LinkedList:
             self.head = node
             self.tail = self.head
         else:
-            node.prev = self.tail
-            node.prev.next = node
+            node['set']('prev', self.tail) # node.prev = self.tail
+            node['get']('prev')['set']('next', node) # node.prev.next = node
             self.tail = node
 
     def search(self, k):
@@ -67,8 +79,8 @@ class LinkedList:
         p = self.head
         if p != None:
             while p != None:
-                s += str(p.data)
-                p = p.next
+                s += str(p['get']('data'))
+                p = p['get']('next')
         return s + '>'
 
     def __repr__(self):
@@ -152,7 +164,12 @@ def Calc():
         l = m(operands.pop(), operands.pop())
         operands += [l]
 
-Insert_Loop()
-Calc()
-print(operands)
-print(operators)
+# Insert_Loop()
+# Calc()
+# print(operands)
+# print(operators)
+l = LinkedList()
+l.addHead(1)
+l.addHead(2)
+l.addHead(3)
+print(l)
