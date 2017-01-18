@@ -1,22 +1,26 @@
-stack = []
+operands = []
+operators = []
 
-class Node:
-    def __init__(self, data):
+def Node():
+    def init(self, data):
         self.data = data
         self.next = None
         self.prev = None
 
-    def __getitem__(self, i):
+    def getitem(self, i):
         if i == 0:
             return self
         return self.next[i-1]
 
-    def __str__(self):
+    def str(self):
         if self.prev: prev = self.prev.data
         else: prev = None
         if self.next: next = self.next.data
         else: next = None
         return '{0} <-- {1} --> {2}'.format(prev,self.data,next)
+
+    dispatch = {'init' : init, 'getitem' : getitem, 'str' : str} 
+    return dispatch
 
 class LinkedList:
     def __init__( self ):
@@ -108,17 +112,47 @@ def Plus(list1, list2):
         if p2: p2 = p2.prev
     return l
 
-def Insert():
-    global stack
-    l = LinkedList()
-    l.addHead(None)
-    while(l.head.data != 'q'):
-        l = StrToLinkedList(input('Put the number:   '))
-        if(l[0].data == '+'):
-            l = Plus(stack.pop(), stack.pop())
-        print(l)
-        stack += [l]
-    stack.pop()
+def Sub(list1, list2):
+    pass
 
-Insert()
-print(stack)
+def Mul(list1, list2):
+    pass
+
+def Div(list1, list2):
+    pass
+
+def Apply(x):
+    if(x == '+'):
+        return Plus
+    elif(x == '-'):
+        return Sub
+    elif(x == '*'):
+        return Mul
+    elif(x == '/'):
+        return Div
+
+def Insert_Loop():
+    global operands, operators
+    l = LinkedList()
+    x = ''
+    while True:
+        x = input('Put the number> ')
+        if x == 'q': return        
+        if (x in ('+', '-', '*', '/')):
+            operators += x
+        else:
+            l = StrToLinkedList(x)
+            operands += [l]
+
+def Calc():
+    global operands, operators
+    while(len(operators) > 0):
+        x = operators.pop()
+        m = Apply(x)
+        l = m(operands.pop(), operands.pop())
+        operands += [l]
+
+Insert_Loop()
+Calc()
+print(operands)
+print(operators)
