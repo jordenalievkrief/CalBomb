@@ -1,6 +1,6 @@
 operands = []
 operators = []
-Flage = None
+Flag2 = None
 def Node(data, next = None, prev = None):
     def get(msg):
         nonlocal data, next, prev
@@ -149,12 +149,12 @@ def Plus(list1, list2):
     return l
 
 def Sub(list1, list2):
-    Flage = False
+    Flag = None
     def Add(x, y):
-        nonlocal Flage
+        nonlocal Flag
         X=int(x['get']('data')) if x is not None else 0
         Y=int(y['get']('data')) if y is not None else 0
-        if Flage == True:
+        if Flag == True:
            if Y==0:
             Y = 9
            else:
@@ -162,10 +162,10 @@ def Sub(list1, list2):
             Flage = False
 
         if Y >= X:
-          #Flage = False
+          #Flag = False
           return Y-X
         else:
-            Flage = True
+            Flag = True
             return (Y+10)-X
     l = LinkedList()
     LenL1 = list1['len']()
@@ -182,11 +182,13 @@ def Sub(list1, list2):
                     long['set']('prev', Node(x // 10)) # p1, list1 on head add's 1
             if long: long = long['get']('prev')
             if short: short = short['get']('prev')
-        Num = l['get']('head')
-        Num = (Num['get']('data'))
-        Num = Num*(-1)
-        l['set']('head',Num)
-        l['get']('head')['set']('data',Num)
+            global Flag2
+            Flag2 = True
+        # Num = l['get']('head')
+        # Num = (Num['get']('data'))
+        # Num = Num*(-1)
+        # l['set']('head',Num)
+        # l['get']('head')['set']('data',Num)
         return l
     elif LenL2>LenL1:
         p2, p1 = list1['get']('tail'), list2['get']('tail')
@@ -268,6 +270,13 @@ def Calc():
         m = Apply(x)
         l = m(operands.pop(), operands.pop())
         l['delHeadZero']()
+        global Flag2
+        if Flag2 == True:
+            Num = l['get']('head')
+            Num = (Num['get']('data'))
+            Num = Num*(-1)
+            l['set']('head',Num)
+            l['get']('head')['set']('data',Num)
         operands += [l]
 
 Insert_Loop()
