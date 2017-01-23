@@ -2,7 +2,7 @@ operands = []
 operators = []
 
 def Node(data, next = None, prev = None):
-    def get(msg):
+    def get(msg = 'data'):
         nonlocal data, next, prev
         f = {'data': data, 'next': next, 'prev': prev}
         return f[msg]
@@ -30,11 +30,18 @@ def Node(data, next = None, prev = None):
         else: next = None
         return '{0} <-- {1} --> {2}'.format(prev, data, next)
 
-    dispatch = {'get' : get, 'set' : set_new, 'str' : toStr} 
+    def copy():
+        nonlocal data, next, prev
+        node = Node(data)
+        if prev: node['get']('prev')['set'](prev['get']('data')) 
+        if next: node['get']('next')['set'](next['get']('data'))
+        return node
+
+    dispatch = {'get' : get, 'set' : set_new, 'str' : toStr, 'copy' : copy} 
     return dispatch
 
 def LinkedList(head = None, tail = None):
-    def get(msg):
+    def get(msg = 'head'):
         nonlocal head, tail
         f = {'head' : head, 'tail' : tail}
         return f[msg]
@@ -122,7 +129,16 @@ def LinkedList(head = None, tail = None):
             else:                
                 return        
 
-    dispatch = {'get' : get, 'set' : set_new,'str' : toStr, 'addHead' : addHead, 'addTail' : addTail, 'remove' : remove, 'search' : search, 'len' : len, 'delHeadZero' : delHeadZero}
+    def copy():
+        nonlocal head
+        p = head
+        l = LinkedList()
+        while p:
+            l['addTail'](p['get']())
+            p = p['get']('next')
+        return l
+
+    dispatch = {'get' : get, 'set' : set_new,'str' : toStr, 'addHead' : addHead, 'addTail' : addTail, 'remove' : remove, 'search' : search, 'len' : len, 'delHeadZero' : delHeadZero, 'copy' : copy}
     return dispatch
 
 def StrToLinkedList(str):
@@ -149,7 +165,7 @@ def Plus(list1, list2):
     return l
 
 def Sub(list1, list2):
-    pass
+   
 
 def Mul(list1, list2):
     def Mult(x, y):
@@ -180,8 +196,33 @@ def Mul(list1, list2):
 def Div(list1, list2):
     pass
 
+def Pow(list1, list2):
+    list2['delHeadZero']()
+    l =  LinkedList()
+    listTwo = LinkedList()
+    listOne = LinkedList()
+    l['addHead'](2)
+    listTwo['addHead'](2)
+    listOne['addHead'](1)
+    while list2['get']('head')['get']('data') != 0:
+        l = Mul(l, listTwo)
+        list = Sub(list2['copy'](), listOne)
+        print(list['str']())
+    return l
+
+    # /////
+    # node = Node(1)
+    # listOne = LinkedList(node)
+    # l = list1
+    # # while list2['get']('head') != 0:
+    # #     l = Mul(list1, l)
+    # #     list2 = Sub(list2, listOne)
+    # l = Plus(list2, listOne)
+    # print(l['str']())
+    # return l
+
 def Apply(x):
-    dispatch = {'+' : Plus, '-' : Sub, '*' : Mul, '/' : Div}
+    dispatch = {'+' : Plus, '-' : Sub, '*' : Mul, '/' : Div, '^' : Pow}
     return dispatch[x]
 
 def Insert_Loop():
@@ -191,11 +232,15 @@ def Insert_Loop():
     while True:
         x = input('Put the number> ')
         if x == 'q': return        
-        if (x in ('+', '-', '*', '/')):
+        if (x in ('+', '-', '*', '/', '^', 'd')):
             operators += x
         else:
             l = StrToLinkedList(x)
             operands += [l]
+        p = ''
+        for i in operands:
+            p += i['str']()
+        print(p)
 
 def Calc():
     global operands, operators
@@ -215,3 +260,14 @@ for i in operands:
     p += i['str']()
 print(p)
 #############
+
+# l = LinkedList()
+# l['addHead'](1)
+# l['addHead'](2)
+# l['addHead'](3)
+# l['addHead'](4)
+# ll = l['copy']()
+# l['remove'](l['search'](1))
+# l['delHeadZero']()
+# print(l['str']())
+# print(ll['str']())
