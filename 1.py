@@ -164,7 +164,92 @@ def Plus(list1, list2):
         if p2: p2 = p2['get']('prev')
     return l
 
+
 def Sub(list1, list2):
+    Flag = None
+    def Add(x, y):
+        nonlocal Flag
+        X=int(x['get']('data')) if x is not None else 0
+        Y=int(y['get']('data')) if y is not None else 0
+        if Flag == True:
+           if Y==0:
+            Y = 9
+           else:
+            Y=Y-1
+            Flage = False
+
+        if Y >= X:
+          #Flag = False
+          return Y-X
+        else:
+            Flag = True
+            return (Y+10)-X
+    l = LinkedList()
+    LenL1 = list1['len']()
+    LenL2 = list2['len']()
+    if LenL2 < LenL1:
+        long, short = list1['get']('tail'), list2['get']('tail')
+        while(long or short):
+            x = Add(short, long)
+            l['addHead'](x % 10)
+            if x // 10 > 0:
+                if long['get']('prev'):
+                     long['get']('prev')['set']('data', int(long['get']('prev')['get']('data')) + x // 10)
+                else:
+                    long['set']('prev', Node(x // 10)) # p1, list1 on head add's 1
+            if long: long = long['get']('prev')
+            if short: short = short['get']('prev')
+            global Flag2
+            Flag2 = True
+        return l
+    elif LenL2>LenL1:
+        p2, p1 = list1['get']('tail'), list2['get']('tail')
+        while(p1 or p2):
+          x = Add(p2, p1)
+          l['addHead'](x % 10)
+          if x // 10 > 0:
+             if p1['get']('prev'):
+                p1['get']('prev')['set']('data', int(p1['get']('prev')['get']('data')) + x // 10)
+             else:
+                p1['set']('prev', Node(x // 10)) # p1, list1 on head add's 1
+          if p1: p1 = p1['get']('prev')
+          if p2: p2 = p2['get']('prev')
+    elif LenL1 == LenL2:
+      p1, p2 = list1['get']('head'), list2['get']('head')
+      while p1['get']('data') != p2['get']('data'):
+        if p1['get']('data') < p2['get']('data'):
+             p2, p1 = list1['get']('tail'), list2['get']('tail')
+             while(p1 or p2):
+                 x = Add(p2, p1)
+                 l['addHead'](x % 10)
+                 if x // 10 > 0:
+                   if p1['get']('prev'):
+                     p1['get']('prev')['set']('data', int(p1['get']('prev')['get']('data')) + x // 10)
+                   else:
+                     p1['set']('prev', Node(x // 10)) # p1, list1 on head add's 1
+                 if p1: p1 = p1['get']('prev')
+                 if p2: p2 = p2['get']('prev')
+             return l
+        elif p1['get']('data') > p2['get']('data'):
+            long, short = list1['get']('tail'), list2['get']('tail')
+            while(long or short):
+                x = Add(short, long)
+                l['addHead'](x % 10)
+                if x // 10 > 0:
+                    if long['get']('prev'):
+                      long['get']('prev')['set']('data', int(long['get']('prev')['get']('data')) + x // 10)
+                    else:
+                        long['set']('prev', Node(x // 10)) # p1, list1 on head add's 1
+                if long: long = long['get']('prev')
+                if short: short = short['get']('prev')
+              #  global Flag2
+                Flag2 = True
+            return l
+        else:
+            p1= p1['get']('next')
+            p2= p2['get']('next')
+
+    return l
    
 
 def Mul(list1, list2):
