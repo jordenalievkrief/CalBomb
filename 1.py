@@ -149,7 +149,32 @@ def Plus(list1, list2):
     return l
 
 def Sub(list1, list2):
-    pass
+    def Add(x, y):
+        global Flage
+        X=int(x['get']('data')) if x is not None else 0
+        Y=int(y['get']('data')) if y is not None else 0
+        if Flage == True and Y>0:
+           Y=Y-1
+        if Y >= X:
+          Flage = False
+          return Y-X
+        else:
+            Flage = True
+            return (Y+10)-X
+    l = LinkedList()
+    p1, p2 = list1['get']('tail'), list2['get']('tail')
+    while(p1 or p2):
+        x = Add(p1, p2)
+        l['addHead'](x % 10)
+        if x // 10 > 0:
+            if p1['get']('prev'):
+                p1['get']('prev')['set']('data', int(p1['get']('prev')['get']('data')) + x // 10)
+            else:
+                p1['set']('prev', Node(x // 10)) # p1, list1 on head add's 1
+        if p1: p1 = p1['get']('prev')
+        if p2: p2 = p2['get']('prev')
+    return l
+
 
 def Mul(list1, list2):
     def Mult(x, y):
