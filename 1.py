@@ -195,45 +195,8 @@ def Sub(list1, list2):
     LenL1 = list1['len']()
     LenL2 = list2['len']()
     if LenL1 == LenL2:
-        p1, p2 = list1['get']('head'), list2['get']('head')
-        i=0
-        while i < LenL1:
-            if int(p1['get']('data')) < int(p2['get']('data')):
-                p2, p1 = list1['get']('tail'), list2['get']('tail')
-                while(p1 or p2):
-                    x = Minus(p2, p1)
-                    l['addHead'](x % 10)
-                    if x // 10 > 0:
-                        if p1['get']('prev'):
-                            p1['get']('prev')['set']('data', int(p1['get']('prev')['get']('data')) + x // 10)
-                        else:
-                            p1['set']('prev', Node(x // 10)) # p1, list1 on head add's 1
-                    if p1: p1 = p1['get']('prev')
-                    if p2: p2 = p2['get']('prev')
-                return l
-            elif int(p1['get']('data')) > int(p2['get']('data')):
-                Long, Short = list1['get']('tail'), list2['get']('tail')
-                while(Long or Short):
-                    x = Minus(Short, Long)
-                    l['addHead'](x % 10)
-                    if x // 10 > 0:
-                        if Long['get']('prev'):
-                            Long['get']('prev')['set']('data', int(Long['get']('prev')['get']('data')) + x // 10)
-                        else:
-                            Long['set']('prev', Node(x // 10)) # p1, list1 on head add's 1
-                    if Long: Long = Long['get']('prev')
-                    if Short: Short = Short['get']('prev')
-                return Negative(l)
-            else:
-                p1= p1['get']('next')
-                p2= p2['get']('next')
-                i=i+1
-        l['addHead'](0)
-        return l
-    
-    if LenL1 == LenL2:
-        Long, Short = list1['get']('tail'), list2['get']('tail')
-        while Long:    
+        Long, Short = list1['get']('head'), list2['get']('head')
+        while Long:
             if int(Long['get']('data')) > int(Short['get']('data')):
                 Long, Short = list1['get']('tail'), list2['get']('tail')
                 Neg = True
@@ -289,18 +252,18 @@ def Mul(list1, list2):
 def Div(list1, list2):
     pass
 
-def Pow(list1, list2):
-    list2['delHeadZero']()
+def Pow(po, mu):
     l =  LinkedList()
-    listTwo = LinkedList()
-    listOne = LinkedList()
+    LTwo = LinkedList()
+    LOne = LinkedList()
     l['addHead'](2)
-    listTwo['addHead'](2)
-    listOne['addHead'](1)
-    while list2['get']('head')['get']('data') != 0:
-        l = Mul(l, listTwo)
-        list = Sub(list2['copy'](), listOne)
-        print(list['str']())
+    LTwo['addHead'](2)
+    LOne['addTail'](1)
+    while po['get']('head')['get']('data') != 0:
+        l = Mul(l, LTwo)
+        l['delHeadZero']()
+        po = Sub(po, LOne)
+        print(po['str']())
     return l
 
     # /////
