@@ -119,7 +119,6 @@ def LinkedList(head = None, tail = None):
         return 0
 
     def delHeadZero():
-        nonlocal head
         p = head
         while p['get']('data') == 0:
             pNext = p['get']('next')
@@ -130,7 +129,6 @@ def LinkedList(head = None, tail = None):
                 return        
 
     def copy():
-        nonlocal head
         p = head
         l = LinkedList()
         while p:
@@ -177,13 +175,13 @@ def Sub(list1, list2):
     def Minus(x, y):
         nonlocal Flag
         X=int(x['get']('data')) if x is not None else 0
-        Y=int(y['get']('data')) if y is not None else 0
+        Y=int(y['get']('data')) if y is not None else 0        
         if Flag == True:
-           if Y==0:
-               Y = 9
-           else:
-               Y=Y-1
-               Flage = False
+            if Y==0:
+                Y = 9
+            else:
+                Y=Y-1
+                Flag = False
 
         if Y >= X:
             return Y-X
@@ -221,6 +219,7 @@ def Sub(list1, list2):
         if Short: Short = Short['get']('prev')
     if Neg:
         l = Negative(l)
+    l['delHeadZero']()    
     return l
 
 def Mul(list1, list2):
@@ -259,11 +258,11 @@ def Pow(po, mu):
     l['addHead'](2)
     LTwo['addHead'](2)
     LOne['addTail'](1)
-    while po['get']('head')['get']('data') != 0:
+    while int(po['get']('head')['get']('data')) > 0:
         l = Mul(l, LTwo)
         l['delHeadZero']()
-        po = Sub(po, LOne)
-        print(po['str']())
+        po = Sub(LOne, po)
+    l = Mul(l, mu)
     return l
 
     # /////
@@ -316,12 +315,10 @@ def Calc():
         operands += [l]
 
 def Print():
-# printing of the operands
     p = ''
     for i in operands:
         p += i['str']()
     print(p)
-    #############
 
 Main()
 
