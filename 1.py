@@ -142,14 +142,15 @@ def LinkedList(head = None, tail = None):
 def StrToLinkedList(str):
     l = LinkedList()
     for i in str:
-        l['addTail'](i)
+        l['addTail'](int(i))
     return l
 
 def Plus(list1, list2):
     def Add(x, y):
         return((int(x['get']('data')) if x is not None else 0) + (int(y['get']('data')) if y is not None else 0))
     l = LinkedList()
-    p1, p2 = list1['get']('tail'), list2['get']('tail')
+    l1, l2 = list1['copy'](), list2['copy']()
+    p1, p2 = l1['get']('tail'), l2['get']('tail')
     while(p1 or p2):
         x = Add(p1, p2)
         l['addHead'](x % 10)
@@ -168,6 +169,25 @@ def Negative(l):
     Num = Num * (-1)
     l['get']('head')['set']('data',Num)
     return l
+
+def IsBigger(list1, list2):
+    LenL1 = list1['len']()
+    LenL2 = list2['len']()
+    if LenL1 == LenL2:
+        Long, Short = list1['get']('head'), list2['get']('head')
+        while Long:
+            if Long['get']('data') > Short['get']('data'):
+                return True
+            elif Long['get']('data') < Short['get']('data'):
+                return False
+            Long = Long['get']('next')
+            Short = Short['get']('next')
+        else:
+            None
+    elif LenL1 > LenL2:
+        return True
+    elif LenL1 < LenL2:
+        return False
 
 def Sub(list1, list2):
     Flag = False
@@ -188,30 +208,15 @@ def Sub(list1, list2):
         else:
             Flag = True
             return (Y + 10) - X        
-
     l = LinkedList()
-    LenL1 = list1['len']()
-    LenL2 = list2['len']()
-    if LenL1 == LenL2:
-        Long, Short = list1['get']('head'), list2['get']('head')
-        while Long:
-            if int(Long['get']('data')) > int(Short['get']('data')):
-                Long, Short = list1['get']('tail'), list2['get']('tail')
-                Neg = True
-                break
-            elif int(Long['get']('data')) < int(Short['get']('data')):
-                Short, Long = list1['get']('tail'), list2['get']('tail')
-                break
-            Long = Long['get']('next')
-            Short = Short['get']('next')
-        else:
-            l['addHead'](0)
-            return l
-    elif LenL1 > LenL2:
+    if IsBigger(list1, list2) == True:
         Long, Short = list1['get']('tail'), list2['get']('tail')
         Neg = True
-    elif LenL1 < LenL2:
-        Short, Long = list1['get']('tail'), list2['get']('tail') 
+    elif IsBigger(list1, list2) == False:
+        Short, Long = list1['get']('tail'), list2['get']('tail')
+    else:
+        l['addHead'](0)
+        return l
     while(Long or Short):
         x = Minus(Short, Long)
         l['addHead'](x)
@@ -225,6 +230,10 @@ def Sub(list1, list2):
 def Mul(list1, list2):
     def Mult(x, y):
         return((int(x['get']('data')) if x is not None else 0) * (int(y['get']('data')) if y is not None else 0))
+    if type(list1) == int:
+        OneL = LinkedList()
+        OneL['addHead'](list1)
+        return Mul(OneL,list2)
     tran = 0
     p1 = list1['get']('tail')
     sum = LinkedList()
@@ -249,7 +258,49 @@ def Mul(list1, list2):
     return sum
 
 def Div(list1, list2):
-    pass
+    def Division(list1, list2):
+        b = IsBigger(list1, list2)
+        k = 0
+        if b:
+            k = 1
+            l = Plus(list2, list2)
+            b = IsBigger(list1, l)
+            while b:
+                l = Plus(l, list2)
+                k = k + 1
+                b = IsBigger(list1, l)
+        if b == None: # list1 == list2
+            k = k + 1
+        return k
+
+    l = LinkedList()
+    LenL1 = list1['len']()
+    p1, p2 = list1['get']('head'), list2['get']('head')
+    if(LenL1 == 1):
+        d = p2['get']('data')
+        while p2:
+            div = d // p1['get']('data')
+            l['addTail'](div)
+            d = d - div * p1['get']('data')
+            if p2['get']('next'):
+                d = (d * 10) + p2['get']('next')['get']('data')
+            p2 = p2['get']('next')
+    else:
+        d = LinkedList()
+        d['addTail'](p2['get']('data'))
+        while p2:
+            div = Division(d, list1)
+            l['addTail'](div)
+            mul = Mul(div, list1)
+            mul['delHeadZero']()
+            d = Sub(mul, d)
+            if p2['get']('next'):
+                d['addTail'](p2['get']('next')['get']('data'))
+            p2 = p2['get']('next')
+    return l
+    # print(l['str']())        
+
+
 
 def Pow(po, mu):
     l =  LinkedList()
