@@ -164,93 +164,101 @@ def Plus(list1, list2):
         if p2: p2 = p2['get']('prev')
     return l
 
+def Negative(l):
+    l['delHeadZero']()
+    Num = l['get']('head')['get']('data')
+    Num = Num * (-1)
+    l['get']('head')['set']('data',Num)
+    return l
 
 def Sub(list1, list2):
-    Flag = None
-    def Add(x, y):
+    Flag = False
+    Neg = False
+    def Minus(x, y):
         nonlocal Flag
         X=int(x['get']('data')) if x is not None else 0
         Y=int(y['get']('data')) if y is not None else 0
         if Flag == True:
            if Y==0:
-            Y = 9
+               Y = 9
            else:
-            Y=Y-1
-            Flage = False
+               Y=Y-1
+               Flage = False
 
         if Y >= X:
-          #Flag = False
-          return Y-X
+            return Y-X
         else:
             Flag = True
-            return (Y+10)-X
+            return (Y + 10) - X        
+
     l = LinkedList()
     LenL1 = list1['len']()
     LenL2 = list2['len']()
-    if LenL2 < LenL1:
-        long, short = list1['get']('tail'), list2['get']('tail')
-        while(long or short):
-            x = Add(short, long)
-            l['addHead'](x % 10)
-            if x // 10 > 0:
-                if long['get']('prev'):
-                     long['get']('prev')['set']('data', int(long['get']('prev')['get']('data')) + x // 10)
-                else:
-                    long['set']('prev', Node(x // 10)) # p1, list1 on head add's 1
-            if long: long = long['get']('prev')
-            if short: short = short['get']('prev')
-            global Flag2
-            Flag2 = True
+    if LenL1 == LenL2:
+        p1, p2 = list1['get']('head'), list2['get']('head')
+        i=0
+        while i < LenL1:
+            if int(p1['get']('data')) < int(p2['get']('data')):
+                p2, p1 = list1['get']('tail'), list2['get']('tail')
+                while(p1 or p2):
+                    x = Minus(p2, p1)
+                    l['addHead'](x % 10)
+                    if x // 10 > 0:
+                        if p1['get']('prev'):
+                            p1['get']('prev')['set']('data', int(p1['get']('prev')['get']('data')) + x // 10)
+                        else:
+                            p1['set']('prev', Node(x // 10)) # p1, list1 on head add's 1
+                    if p1: p1 = p1['get']('prev')
+                    if p2: p2 = p2['get']('prev')
+                return l
+            elif int(p1['get']('data')) > int(p2['get']('data')):
+                Long, Short = list1['get']('tail'), list2['get']('tail')
+                while(Long or Short):
+                    x = Minus(Short, Long)
+                    l['addHead'](x % 10)
+                    if x // 10 > 0:
+                        if Long['get']('prev'):
+                            Long['get']('prev')['set']('data', int(Long['get']('prev')['get']('data')) + x // 10)
+                        else:
+                            Long['set']('prev', Node(x // 10)) # p1, list1 on head add's 1
+                    if Long: Long = Long['get']('prev')
+                    if Short: Short = Short['get']('prev')
+                return Negative(l)
+            else:
+                p1= p1['get']('next')
+                p2= p2['get']('next')
+                i=i+1
+        l['addHead'](0)
         return l
-    elif LenL2>LenL1:
-        p2, p1 = list1['get']('tail'), list2['get']('tail')
-        while(p1 or p2):
-          x = Add(p2, p1)
-          l['addHead'](x % 10)
-          if x // 10 > 0:
-             if p1['get']('prev'):
-                p1['get']('prev')['set']('data', int(p1['get']('prev')['get']('data')) + x // 10)
-             else:
-                p1['set']('prev', Node(x // 10)) # p1, list1 on head add's 1
-          if p1: p1 = p1['get']('prev')
-          if p2: p2 = p2['get']('prev')
-    elif LenL1 == LenL2:
-      p1, p2 = list1['get']('head'), list2['get']('head')
-      while p1['get']('data') != p2['get']('data'):
-        if p1['get']('data') < p2['get']('data'):
-             p2, p1 = list1['get']('tail'), list2['get']('tail')
-             while(p1 or p2):
-                 x = Add(p2, p1)
-                 l['addHead'](x % 10)
-                 if x // 10 > 0:
-                   if p1['get']('prev'):
-                     p1['get']('prev')['set']('data', int(p1['get']('prev')['get']('data')) + x // 10)
-                   else:
-                     p1['set']('prev', Node(x // 10)) # p1, list1 on head add's 1
-                 if p1: p1 = p1['get']('prev')
-                 if p2: p2 = p2['get']('prev')
-             return l
-        elif p1['get']('data') > p2['get']('data'):
-            long, short = list1['get']('tail'), list2['get']('tail')
-            while(long or short):
-                x = Add(short, long)
-                l['addHead'](x % 10)
-                if x // 10 > 0:
-                    if long['get']('prev'):
-                      long['get']('prev')['set']('data', int(long['get']('prev')['get']('data')) + x // 10)
-                    else:
-                        long['set']('prev', Node(x // 10)) # p1, list1 on head add's 1
-                if long: long = long['get']('prev')
-                if short: short = short['get']('prev')
-              #  global Flag2
-                Flag2 = True
-            return l
+    
+    if LenL1 == LenL2:
+        Long, Short = list1['get']('tail'), list2['get']('tail')
+        while Long:    
+            if int(Long['get']('data')) > int(Short['get']('data')):
+                Long, Short = list1['get']('tail'), list2['get']('tail')
+                Neg = True
+                break
+            elif int(Long['get']('data')) < int(Short['get']('data')):
+                Short, Long = list1['get']('tail'), list2['get']('tail')
+                break
+            Long = Long['get']('next')
+            Short = Short['get']('next')
         else:
-            p1= p1['get']('next')
-            p2= p2['get']('next')
-
+            l['addHead'](0)
+            return l
+    elif LenL1 > LenL2:
+        Long, Short = list1['get']('tail'), list2['get']('tail')
+        Neg = True
+    elif LenL1 < LenL2:
+        Short, Long = list1['get']('tail'), list2['get']('tail') 
+    while(Long or Short):
+        x = Minus(Short, Long)
+        l['addHead'](x)
+        if Long: Long = Long['get']('prev')
+        if Short: Short = Short['get']('prev')
+    if Neg:
+        l = Negative(l)
     return l
-   
 
 def Mul(list1, list2):
     def Mult(x, y):
@@ -310,22 +318,30 @@ def Apply(x):
     dispatch = {'+' : Plus, '-' : Sub, '*' : Mul, '/' : Div, '^' : Pow}
     return dispatch[x]
 
-def Insert_Loop():
+def Main():
     global operands, operators
     l = LinkedList()
     x = ''
+    print("  ***Welcome to CalBomb***\nChoose one of the option :\n1)calculate. \n2)If you want to calculate press c\n3)If you want to print the numbers press p\n4) Exit Press q\n")
     while True:
-        x = input('Put the number> ')
-        if x == 'q': return        
-        if (x in ('+', '-', '*', '/', '^', 'd')):
+        x = input('\nPlease enter a number : ')
+        if x == 'q': return
+        if (x in ('+', '-', '*', '/','^')):
             operators += x
+        elif x=='c' or x=='C':
+            Calc()
+        elif x == 'p' or x =='P' :
+            Print()
         else:
-            l = StrToLinkedList(x)
-            operands += [l]
-        p = ''
-        for i in operands:
-            p += i['str']()
-        print(p)
+            Temp = True
+            try:
+                y = int(x)
+            except ValueError:
+                print("That's not an Number!")
+                Temp = False
+            if Temp == True:
+                 l = StrToLinkedList(x)
+                 operands += [l]
 
 def Calc():
     global operands, operators
@@ -336,15 +352,15 @@ def Calc():
         l['delHeadZero']()
         operands += [l]
 
-Insert_Loop()
-Calc()
-
+def Print():
 # printing of the operands
-p = ''
-for i in operands:
-    p += i['str']()
-print(p)
-#############
+    p = ''
+    for i in operands:
+        p += i['str']()
+    print(p)
+    #############
+
+Main()
 
 # l = LinkedList()
 # l['addHead'](1)
