@@ -320,7 +320,7 @@ def Main():
     global operands, operators
     l = LinkedList()
     x = ''
-    print("  ***Welcome to CalBomb***\nChoose one of the option :\n1)calculate. \n2)If you want to calculate press c\n3)If you want to print the numbers press p\n4) Exit Press q\n")
+    print("  ***Welcome to CalBomb***\nChoose one of the option :\n1)calculate. \n2)If you want to calculate press c\n3)If you want to print the numbers press p\n4)To delete the last number press r\n5)To duplicate press d\n6)Exit Press q\n")
     while True:
         x = input('\nPlease enter a number : ')
         if x == 'q': return
@@ -332,6 +332,11 @@ def Main():
             Print()
         elif x=='r' or x=='R':
             operands.pop()
+        elif x=='d' or x=='D':
+            l = operands.pop()
+            operands += [l]
+            operands += [l['copy']()]
+
         else:
             Temp = True
             try:
