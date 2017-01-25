@@ -298,34 +298,19 @@ def Div(list1, list2):
                 d['addTail'](p2['get']('next')['get']('data'))
             p2 = p2['get']('next')
     return l
-    # print(l['str']())        
-
-
+    # print(l['str']())
 
 def Pow(po, mu):
     l =  LinkedList()
-    LTwo = LinkedList()
     LOne = LinkedList()
     l['addHead'](2)
-    LTwo['addHead'](2)
     LOne['addTail'](1)
-    while int(po['get']('head')['get']('data')) > 0:
-        l = Mul(l, LTwo)
-        l['delHeadZero']()
+    while po['get']('head')['get']('data') > 0:
+        l = Mul(2, l)
+        # l['delHeadZero']()
         po = Sub(LOne, po)
     l = Mul(l, mu)
     return l
-
-    # /////
-    # node = Node(1)
-    # listOne = LinkedList(node)
-    # l = list1
-    # # while list2['get']('head') != 0:
-    # #     l = Mul(list1, l)
-    # #     list2 = Sub(list2, listOne)
-    # l = Plus(list2, listOne)
-    # print(l['str']())
-    # return l
 
 def Apply(x):
     dispatch = {'+' : Plus, '-' : Sub, '*' : Mul, '/' : Div, '^' : Pow}
