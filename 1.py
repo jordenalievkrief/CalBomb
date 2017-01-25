@@ -328,8 +328,10 @@ def Main():
             operators += x
         elif x=='c' or x=='C':
             Calc()
-        elif x == 'p' or x =='P' :
+        elif x == 'p' or x =='P':
             Print()
+        elif x=='r' or x=='R':
+            operands.pop()
         else:
             Temp = True
             try:
@@ -344,11 +346,14 @@ def Main():
 def Calc():
     global operands, operators
     while(len(operators) > 0):
-        x = operators.pop()
-        m = Apply(x)
-        l = m(operands.pop(), operands.pop())
-        l['delHeadZero']()
-        operands += [l]
+        try:
+            x = operators.pop()
+            m = Apply(x)
+            l = m(operands.pop(), operands.pop())
+            l['delHeadZero']()
+            operands += [l]
+        except ZeroDivisionError:
+            print("Error: integer division or modulo by zero")
 
 def Print():
     p = ''
